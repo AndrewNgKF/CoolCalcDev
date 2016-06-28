@@ -1,6 +1,7 @@
 package com.andrew.coolcalcdev;
 
 import android.app.Activity;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,23 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class CalcActivity extends Activity {
+
+    public enum Operation {
+        ADD, SUBTRACT, DIVIDE, MULTIPLY, EQUAL
+    }
+
+    String runningNumber = "";
+    String leftValueStr = "";
+    String rightValueStr = "";
+    Operation currentOperation;
+    int result = 0;
+
+
+
+    TextView resultsView;
+
+
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -45,7 +63,10 @@ public class CalcActivity extends Activity {
         ImageButton addBtn = (ImageButton) findViewById(R.id.addBtn);
         Button clearBtn = (Button) findViewById(R.id.clearBtn);
 
-        TextView resultsView = (TextView) findViewById(R.id.resultsText);
+        resultsView = (TextView)findViewById(R.id.resultsText);
+
+
+        resultsView.setText("");
 
 
         // set the on click listeners.
@@ -53,131 +74,154 @@ public class CalcActivity extends Activity {
         oneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(1);
             }
         });
 
         twoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(2);
             }
         });
 
         threeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(3);
             }
         });
 
         fourBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(4);
             }
         });
         fiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(5);
             }
         });
         sixBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(6);
             }
         });
         sevenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(7);
             }
         });
         eightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(8);
             }
         });
         nineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(9);
             }
         });
         zeroBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numberPressed(0);
             }
         });
 
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processOperation(Operation.ADD);
             }
         });
         subtractBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processOperation(Operation.SUBTRACT);
             }
         });
         multiplyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processOperation(Operation.MULTIPLY);
             }
         });
         divideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processOperation(Operation.DIVIDE);
             }
         });
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                leftValueStr = "";
+                rightValueStr = "";
+                result = 0;
+                runningNumber = "";
+                currentOperation = null;
+                resultsView.setText("");
+                resultsView.setText("0");
+
             }
         });
         calcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                processOperation(Operation.EQUAL);
             }
         });
-
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    void processOperation(Operation operation) {
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Calc Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.andrew.coolcalcdev/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+
+
+        if (currentOperation != null) {
+            if (runningNumber != "") {
+                rightValueStr = runningNumber;
+                runningNumber = "";
+
+                switch (currentOperation) {
+                    case ADD:
+                        result = Integer.parseInt(leftValueStr) + Integer.parseInt(rightValueStr);
+                        break;
+                    case SUBTRACT:
+                        result = Integer.parseInt(leftValueStr) - Integer.parseInt(rightValueStr);
+                        break;
+                    case MULTIPLY:
+                        result = Integer.parseInt(leftValueStr) * Integer.parseInt(rightValueStr);
+                        break;
+                    case DIVIDE:
+                        result = Integer.parseInt(leftValueStr) / Integer.parseInt(rightValueStr);
+                        break;
+                }
+
+                leftValueStr = String.valueOf(result);
+                resultsView.setText(leftValueStr);
+
+            }
+            currentOperation = operation;
+        } else {
+            leftValueStr = runningNumber;
+            runningNumber = "";
+        }
+        currentOperation = operation;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Calc Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.andrew.coolcalcdev/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
+    void numberPressed(int number) {
+        runningNumber += String.valueOf(number);
+        resultsView.setText(runningNumber);
+
     }
 }
+
+
